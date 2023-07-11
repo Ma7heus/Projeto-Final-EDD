@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct _data {
+struct _data {
    int dia;
    int mes;
    int ano;
@@ -9,7 +9,9 @@ typedef struct _data {
    int minuto;
 } Data;
 
-typedef struct _evento {
+typedef struct _data Data;
+
+struct _evento {
    int codigo;
    Data dataEvento;
    float duracao;
@@ -17,19 +19,12 @@ typedef struct _evento {
    struct _evento *proximo;
 } Evento;
 
+typedef struct _evento Evento;
+
 Evento *agenda = NULL;
 
-Evento* criarEvento(int codigo, Data data, float duracao, char descricao[]) {
-   Evento *evento = (Evento*)malloc(sizeof(Evento));
-   evento->codigo = codigo;
-   evento->dataEvento = data;
-   evento->duracao = duracao;
-   strcpy(evento->descricao, descricao);
-   evento->proximo = NULL;
-   return evento;
-}
 
-void incluirEvento() {
+void criarNovoEvento() {
    int codigo;
    Data data;
    float duracao;
@@ -38,16 +33,16 @@ void incluirEvento() {
    printf("Digite o código do evento: ");
    scanf("%d", &codigo);
 
-   printf("Digite a data do evento (dia/mes/ano hora:minuto): ");
+   printf("Digite a data do evento (dia/mes/ano hh:mm): ");
    scanf("%d/%d/%d %d:%d", &data.dia, &data.mes, &data.ano, &data.hora, &data.minuto);
 
-   printf("Digite a duração do evento: ");
+   printf("Digite a duração do evento em horas: ");
    scanf("%f", &duracao);
 
    printf("Digite a descrição do evento: ");
    scanf(" %[^\n]", descricao);
 
-   Evento *evento = criarEvento(codigo, data, duracao, descricao);
+   Evento *evento = salvarEvento(codigo, data, duracao, descricao);
 
    if (agenda == NULL) {
       agenda = evento;
@@ -60,6 +55,18 @@ void incluirEvento() {
    }
 
    printf("Evento incluído com sucesso!\n");
+}
+
+
+
+Evento* salvarEvento(int codigo, Data data, float duracao, char descricao[]) {
+   Evento *evento = (Evento*)malloc(sizeof(Evento));
+   evento->codigo = codigo;
+   evento->dataEvento = data;
+   evento->duracao = duracao;
+   strcpy(evento->descricao, descricao);
+   evento->proximo = NULL;
+   return evento;
 }
 
 void consultarEventoPorData(Data data) {
@@ -205,7 +212,7 @@ int main() {
 
       switch (opcao) {
          case 1:
-            incluirEvento();
+            criarNovoEvento();
             break;
          case 2:
             printf("Digite a data do evento (dia/mes/ano): ");
